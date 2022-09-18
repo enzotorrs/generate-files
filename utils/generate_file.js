@@ -3,7 +3,13 @@ const { dirname } = require('path');
 const appDir = dirname(require.main.filename);
 
 async function generate_file(size){
-    await execPromise(`dd if=/dev/zero of=${appDir}/generated_files/${size} bs=1M count=${size}`)
+    try {
+        await execPromise(`dd if=/dev/zero of=${appDir}/generated_files/${size} bs=1M count=${size}`)
+    }
+    catch{
+        await execPromise(`mkdir -p ${appDir}/generated_files`)
+        await execPromise(`dd if=/dev/zero of=${appDir}/generated_files/${size} bs=1M count=${size}`)
+    }
 }
 
 function execPromise(command) {
