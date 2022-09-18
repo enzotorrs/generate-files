@@ -1,6 +1,7 @@
 const express = require("express")
 const utils = require("./utils/generate_file.js")
 const bodyParser = require('body-parser');
+const fs = require("fs")
 
 const app = express()
 
@@ -24,8 +25,15 @@ app.get("/download", (req, res) => {
     if(!size){
         return res.status(400).json({error: "unspecified size"})
     }
-
-    res.download(`./generated_files/${size}`)
+    try {
+        if(fs.existsSync(`./generated_files/${size}`)){
+            return res.download(`./generated_files/${size}`)
+        }
+        return res.status(400).json({error: "file does not exist"})
+    }
+    catch(err) {
+        return res.status(500).json({error: err.message})
+    }
 })
 
 app.listen(3003, () => {
