@@ -10,29 +10,29 @@ app.use(bodyParser.json());
 app.post("/generate", async (req, res) => {
     const { size } = req.body
 
-    if(!size){
-        return res.status(400).json({error: "unspecified size"})
+    if (!size) {
+        return res.status(400).json({ error: "unspecified size" })
     }
 
     await utils.generate_file(size)
 
-    res.send("file generate successfully")
+    res.send({ message: "File successfuly generated", url: `/download?size=${size}` })
 })
 
 app.get("/download", (req, res) => {
     const { size } = req.query
 
-    if(!size){
-        return res.status(400).json({error: "unspecified size"})
+    if (!size) {
+        return res.status(400).json({ error: "unspecified size" })
     }
     try {
-        if(fs.existsSync(`./generated_files/${size}`)){
+        if (fs.existsSync(`./generated_files/${size}`)) {
             return res.download(`./generated_files/${size}`)
         }
-        return res.status(400).json({error: "file does not exist"})
+        return res.status(400).json({ error: "file does not exist" })
     }
-    catch(err) {
-        return res.status(500).json({error: err.message})
+    catch (err) {
+        return res.status(500).json({ error: err.message })
     }
 })
 
