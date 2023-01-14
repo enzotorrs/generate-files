@@ -12,6 +12,7 @@ app.use((_, res, next) => {
 });
 
 app.use(bodyParser.json());
+app.use(express.static('generated_files/'));
 
 app.post("/generate", async (req, res) => {
     const { size } = req.body
@@ -22,7 +23,7 @@ app.post("/generate", async (req, res) => {
 
     await utils.generate_file(size)
 
-    res.send({ message: "File successfuly generated", url: `/download?size=${size}` })
+    res.send({ message: "File successfuly generated", url: `/${size}` })
 })
 
 app.get("/download", (req, res) => {
