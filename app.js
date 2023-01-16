@@ -15,15 +15,19 @@ app.use(bodyParser.json());
 app.use(express.static('generated_files/'));
 
 app.post("/generate", async (req, res) => {
-    const { size } = req.body
+    const { size, file_name } = req.body
 
     if (!size) {
         return res.status(400).json({ error: "unspecified size" })
     }
 
-    await utils.generate_file(size)
+    if (!file_name) {
+        return res.status(400).json({ error: "unspecified file_name" })
+    }
 
-    res.send({ message: "File successfuly generated", url: `/${size}` })
+    await utils.generate_file(size,file_name)
+
+    res.send({ message: "File successfuly generated", url: `/${file_name}` })
 })
 
 app.get("/download", (req, res) => {
