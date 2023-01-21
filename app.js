@@ -13,7 +13,7 @@ const io = new Server(3001, {
 const app = express()
 
 app.use((_, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
@@ -33,11 +33,11 @@ app.post("/generate", async (req, res) => {
     }
 
     utils.generate_file(size, file_name)
-        .then(()=> {
+        .then(() => {
             io.emit("finish_process", `/${file_name}`)
         })
 
-    res.send({ message: "File successfuly generated", url: `/${file_name}` })
+    res.send({ message: "File is being generated" })
 })
 
 app.listen(3003, () => {
