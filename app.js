@@ -2,6 +2,14 @@ const express = require("express")
 const utils = require("./utils/generate_file.js")
 const bodyParser = require('body-parser');
 const fs = require("fs")
+const { Server } = require("socket.io");
+
+const io = new Server(3001, {
+    cors: {
+        origin: ["http://localhost:3000"],
+        methods: ["POST", "GET"]
+    }
+})
 
 const app = express()
 
@@ -25,7 +33,10 @@ app.post("/generate", async (req, res) => {
         return res.status(400).json({ error: "unspecified file_name" })
     }
 
-    await utils.generate_file(size,file_name)
+    utils.generate_file(size, file_name)
+        .then(()=> {
+            io.emit("finish_process", `/${file_name}`)
+        })
 
     res.send({ message: "File successfuly generated", url: `/${file_name}` })
 })
@@ -46,6 +57,7 @@ app.get("/download", (req, res) => {
         return res.status(500).json({ error: err.message })
     }
 })
+
 
 app.listen(3003, () => {
     console.log("server running")
