@@ -34,7 +34,10 @@ app.post("/generate", async (req, res) => {
 
     utils.generate_file(size, file_name)
         .then(() => {
-            io.emit("finish_process", `/${file_name}`)
+            io.emit("finish_process", {"error": false, "url": `/${file_name}`})
+        })
+        .catch(() => {
+            io.emit("finish_process", {"error": true})
         })
 
     res.send({ message: "File is being generated" })
