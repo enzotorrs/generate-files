@@ -3,9 +3,9 @@ const utils = require("./utils/generate_file.js")
 const bodyParser = require('body-parser');
 const { Server } = require("socket.io");
 
-const io = new Server(3001, {
+const io = new Server(3002, {
     cors: {
-        origin: ["http://localhost:3000"],
+        origin: "*",
         methods: ["POST", "GET"]
     }
 })
