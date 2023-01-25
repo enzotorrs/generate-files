@@ -1,0 +1,22 @@
+---
+- hosts: all
+  tasks:
+    - name: "Copy source code"
+      copy:
+        src: ../
+        dest: "{{ dest_dir }}"
+
+    - name: "Install app dependences"
+      shell: "cd {{ dest_dir }} && npm install"
+
+    - name: "Create service for app"
+      template:
+        src: templates/pandora-files.service.j2
+        dest: /etc/systemd/system/pandora-files.service
+      become: yes
+
+    - name: "Restart app service"
+      service:
+        name: pandora-files
+        state: restarted
+      become: yes

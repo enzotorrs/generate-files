@@ -1,0 +1,2 @@
+[your ip/name]
+your ip/name ansible_user=your user ansible_ssh_pass=your password ansible_sudo_pass= your sudo password
