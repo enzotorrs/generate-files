@@ -2,8 +2,9 @@ const express = require("express")
 const utils = require("./utils/generate_file.js")
 const bodyParser = require('body-parser');
 const { Server } = require("socket.io");
+const config = require('config')
 
-const io = new Server(3002, {
+const io = new Server(config.get('socketServerPort'), {
     cors: {
         origin: "*",
         methods: ["POST", "GET"]
@@ -19,7 +20,10 @@ app.use((_, res, next) => {
 });
 
 app.use(bodyParser.json());
-app.use(express.static('generated_files/'));
+
+if (process.env.NODE_ENV === "development") {
+    app.use(express.static('generated_files/'));
+}
 
 app.post("/generate", async (req, res) => {
     const { size, file_name } = req.body
@@ -34,15 +38,15 @@ app.post("/generate", async (req, res) => {
 
     utils.generate_file(size, file_name)
         .then(() => {
-            io.emit("finish_process", {"error": false, "url": `/${file_name}`})
+            io.emit("finish_process", { "error": false, "url": `/${file_name}` })
         })
         .catch(() => {
-            io.emit("finish_process", {"error": true})
+            io.emit("finish_process", { "error": true })
         })
 
     res.send({ message: "File is being generated" })
 })
 
-app.listen(3003, () => {
+app.listen(config.get("serverPort"), () => {
     console.log("server running")
 })

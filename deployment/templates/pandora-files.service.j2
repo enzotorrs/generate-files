@@ -3,9 +3,11 @@ Description=Pandora files backend
 After=network.target
 
 [Service]
+Environment=NODE_ENV=production
+WorkingDirectory={{ dest_dir }}
 Type=simple
 User={{ user }}
-ExecStart=node {{ dest_dir }}/app.js
+ExecStart=node app.js
 Restart=on-failure
 
 [Install]
