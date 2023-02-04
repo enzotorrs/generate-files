@@ -1,29 +1,17 @@
-const { exec } = require('child_process');
+const util = require('util')
+const exec = util.promisify(require('child_process').exec);
 const { dirname } = require('path');
+const { existsSync, mkdirsync} = require('fs')
+
 const appDir = dirname(require.main.filename);
 
-async function generate_file(size, fileName){
-    try {
-        await execPromise(`dd if=/dev/zero of="${appDir}/generated_files/${fileName}" bs=1M count=${size}`)
+async function generate_file(size, fileName) {
+    const generatedFilesFolder = `${appDir}/generated_files`
+    if(!existsSync(generatedFilesFolder)){
+        mkdirsync(generatedFilesFolder)
     }
-    catch{
-        await execPromise(`mkdir -p ${appDir}/generated_files`)
-        await execPromise(`dd if=/dev/zero of="${appDir}/generated_files/${fileName}" bs=1M count=${size}`)
-    }
+    await exec(`dd if=/dev/zero of="${generatedFilesFolder}/${fileName}" bs=1M count=${size}`)
 }
 
-function execPromise(command) {
-    return new Promise(function(resolve, reject) {
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-
-            resolve(stdout.trim());
-        });
-    });
-}
-
-module.exports = {generate_file}
+module.exports = { generate_file }
 
