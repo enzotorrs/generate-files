@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.post("/generate", async (req, res) => {
-    const { size, file_name } = req.body
+    const { size, file_name, socketId } = req.body
 
     if (!size) {
         return res.status(400).json({ error: "unspecified size" })
@@ -36,12 +36,16 @@ app.post("/generate", async (req, res) => {
         return res.status(400).json({ error: "unspecified file_name" })
     }
 
+    if(!socketId){
+        return res.status(400).json({ error: "unspecified socketId" })
+    }
+
     utils.generate_file(size, file_name)
         .then(() => {
-            io.emit("finish_process", { "error": false, "url": `/${file_name}` })
+            io.to(socketId).emit("finish_process", { "error": false, "url": `/${file_name}` })
         })
         .catch(() => {
-            io.emit("finish_process", { "error": true })
+            io.to(socketId).emit("finish_process", { "error": true })
         })
 
     res.send({ message: "File is being generated" })
