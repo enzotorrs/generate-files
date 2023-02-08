@@ -10,7 +10,9 @@
         force: yes
 
     - name: "Install app dependences"
-      shell: "cd {{ dest_dir }} && npm install"
+      npm:
+        path: "{{ dest_dir }}"
+        state: present
 
     - name: "Create service for app"
       template:
