@@ -1,8 +1,9 @@
 const express = require("express")
-const utils = require("./utils/generate_file.js")
+const utils = require("./utils/generate_file")
 const bodyParser = require('body-parser');
 const { Server } = require("socket.io");
-const config = require('config')
+const config = require('config');
+const { getProgressPercent } = require("./utils/generate_file/get_progress_percent");
 
 const io = new Server(config.get('socketServerPort'), {
     cors: {
@@ -36,15 +37,20 @@ app.post("/generate", async (req, res) => {
         return res.status(400).json({ error: "unspecified file_name" })
     }
 
-    if(!socketId){
+    if (!socketId) {
         return res.status(400).json({ error: "unspecified socketId" })
     }
 
-    utils.generate_file(size, file_name)
-        .then(() => {
+    utils.generate_file(size, file_name,
+        (data) => {
+            const stringData = data.toString()
+            const percent = getProgressPercent(stringData, size)
+            io.to(socketId).emit("progress", { "percent": percent})
+        },
+        () => {
             io.to(socketId).emit("finish_process", { "error": false, "url": `/${file_name}` })
-        })
-        .catch(() => {
+        },
+        () => {
             io.to(socketId).emit("finish_process", { "error": true })
         })
 
