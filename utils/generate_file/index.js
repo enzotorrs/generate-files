@@ -4,6 +4,7 @@ const { dd } = require('./dd.js')
 
 const { existsSync, mkdirsync, unlinkSync } = require('fs')
 const { dirname } = require('path');
+const { logger } = require('../logger/index.js');
 
 const appDir = dirname(require.main.filename);
 
@@ -17,12 +18,12 @@ async function generate_file(size, fileName, onProgress, onFinish, onError) {
 
     dd(size, filePath, onProgress, onError, onFinish)
 
-    eraseFileAfterMiliseconds(config.get("eraseFileAfterMiliseconds"))
+    eraseFileAfterMiliseconds(config.get("eraseFileAfterMiliseconds"), filePath)
 }
 
-function eraseFileAfterMiliseconds(miliseconds) {
+function eraseFileAfterMiliseconds(miliseconds, filePath) {
     setTimeout(() => {
-        unlinkSync(`${generatedFilesFolder}/${fileName}`)
+        unlinkSync(filePath)
     }, miliseconds)
 }
 
