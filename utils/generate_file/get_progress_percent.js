@@ -3,7 +3,7 @@ function getProgressPercent(dataString, size) {
     const target = 1048576 * size
     const percent = Number(bytes) / target * 100
     const percentTrunc = Math.trunc(percent)
-    return percentTrunc
+    return isNaN(percentTrunc) ? 100 : percentTrunc
 }
 
 module.exports = { getProgressPercent }
