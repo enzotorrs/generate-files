@@ -4,8 +4,9 @@ const bodyParser = require('body-parser');
 const { Server } = require("socket.io");
 const config = require('config');
 const { getProgressPercent } = require("./utils/generate_file/get_progress_percent");
-const {logger } = require('./utils/logger')
-const morgan = require('morgan')
+const { logger } = require('./utils/logger')
+const morgan = require('morgan');
+const { validateGenerateRoute } = require("./utils/validate");
 
 const io = new Server(config.get('socketServerPort'), {
     cors: {
@@ -34,19 +35,10 @@ app.post("/generate", async (req, res) => {
     const { size, file_name, socketId } = req.body
     logger(`new file request received ${size} ${file_name} ${socketId}`)
 
-    if (!size) {
-        logger("size not especified in request")
-        return res.status(400).json({ error: "unspecified size" })
-    }
+    const { error, message, status } = validateGenerateRoute(req.body)
 
-    if (!file_name) {
-        logger("file name not especified in request")
-        return res.status(400).json({ error: "unspecified file_name" })
-    }
-
-    if (!socketId) {
-        logger("socket id not especified in request")
-        return res.status(400).json({ error: "unspecified socketId" })
+    if (error) {
+        return res.status(status).json({ message: message })
     }
 
     utils.generate_file(size, file_name,
@@ -54,7 +46,7 @@ app.post("/generate", async (req, res) => {
         (data) => {
             const stringData = data.toString()
             const percent = getProgressPercent(stringData, size)
-            io.to(socketId).emit("progress", { "percent": percent})
+            io.to(socketId).emit("progress", { "percent": percent })
             logger(`onProgess event trigged for ${socketId} socket ${percent}%`)
         },
         // on finish
@@ -68,7 +60,7 @@ app.post("/generate", async (req, res) => {
             logger(`onError event trigged for ${socketId} socket`)
         })
 
-    res.send({ message: "File is being generated" })
+    res.send({ message: message })
 })
 
 app.listen(config.get("serverPort"), () => {
