@@ -1,5 +1,6 @@
 {
     "socketServerPort": 3002,
     "serverPort": 3003,
-    "eraseFileAfterMiliseconds": 360000
+    "eraseFileAfterMiliseconds": 360000,
+    "maxFileSize": 10737418240
 }

@@ -17,6 +17,11 @@ function validateGenerateRoute({ size, file_name, socketId }) {
         return { error: true, message: "unspecified socketId", status: 400 }
     }
 
+    if (!(size > 0 && size <= config.get("maxFileSize"))) {
+        logger("size is larger than max or lower than 1")
+        return { error: true, message: "request file size compatible", status: 400 }
+    }
+
     return { error: false, message: "file is being generated", status: 200 }
 }
 
