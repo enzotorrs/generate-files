@@ -1,5 +1,5 @@
 {
     "socketServerPort": 3002,
     "serverPort": 3003,
-    "eraseFileAfterMiliseconds": 3600000
+    "eraseFileAfterMiliseconds": 360000
 }

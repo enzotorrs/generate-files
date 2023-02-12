@@ -24,6 +24,7 @@ async function generate_file(size, fileName, onProgress, onFinish, onError) {
 function eraseFileAfterMiliseconds(miliseconds, filePath) {
     setTimeout(() => {
         unlinkSync(filePath)
+        logger(`${filePath} has been deleted`)
     }, miliseconds)
 }
 
