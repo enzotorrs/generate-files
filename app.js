@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { Server } = require("socket.io");
 const config = require('config');
 const { getProgressPercent } = require("./utils/generate_file/get_progress_percent");
+const morgan = require('morgan')
 
 const io = new Server(config.get('socketServerPort'), {
     cors: {
@@ -21,6 +22,8 @@ app.use((_, res, next) => {
 });
 
 app.use(bodyParser.json());
+
+app.use(morgan('tiny'))
 
 if (process.env.NODE_ENV === "development") {
     app.use(express.static('generated_files/'));
