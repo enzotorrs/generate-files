@@ -17,9 +17,13 @@ async function generate_file(size, fileName, onProgress, onFinish, onError) {
 
     dd(size, filePath, onProgress, onError, onFinish)
 
+    eraseFileAfterMiliseconds(config.get("eraseFileAfterMiliseconds"))
+}
+
+function eraseFileAfterMiliseconds(miliseconds) {
     setTimeout(() => {
         unlinkSync(`${generatedFilesFolder}/${fileName}`)
-    }, config.get('eraseFileAfterMiliseconds'))
+    }, miliseconds)
 }
 
 module.exports = { generate_file }
