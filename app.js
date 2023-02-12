@@ -42,14 +42,17 @@ app.post("/generate", async (req, res) => {
     }
 
     utils.generate_file(size, file_name,
+        // on progress
         (data) => {
             const stringData = data.toString()
             const percent = getProgressPercent(stringData, size)
             io.to(socketId).emit("progress", { "percent": percent})
         },
+        // on finish
         () => {
             io.to(socketId).emit("finish_process", { "error": false, "url": `/${file_name}` })
         },
+        // on Error
         () => {
             io.to(socketId).emit("finish_process", { "error": true })
         })
