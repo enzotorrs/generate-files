@@ -1,15 +1,11 @@
 const config = require('config');
-const { Server } = require("socket.io");
-const io = new Server(config.get('socketServerPort'), {
-    cors: {
-        origin: "*",
-        methods: ["POST", "GET"]
-    }
-})
+
+const io = require('../socket')
 const { generate_file } = require("../utils/generate_file")
 const { logger } = require('../utils/logger')
 const { validateGenerateRoute } = require("../utils/validate");
 const { getProgressPercent } = require("../utils/generate_file/get_progress_percent");
+
 exports.generate = (req, res) => {
     const { size, file_name, socketId } = req.body
     logger(`new file request received ${size} ${file_name} ${socketId}`)
