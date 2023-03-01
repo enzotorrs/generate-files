@@ -8,7 +8,7 @@ const { logger } = require('../logger/index.js');
 
 const appDir = dirname(require.main.filename);
 
-async function generate_file(size, fileName, onProgress, onFinish, onError) {
+async function generateFile(size, fileName, onProgress, onFinish, onError) {
     const generatedFilesFolder = `${appDir}/generated_files`
     if (!existsSync(generatedFilesFolder)) {
         mkdirSync(generatedFilesFolder)
@@ -28,4 +28,4 @@ function eraseFileAfterMiliseconds(miliseconds, filePath) {
     }, miliseconds)
 }
 
-module.exports = { generate_file }
+module.exports = { generateFile }

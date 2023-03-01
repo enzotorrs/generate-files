@@ -1,10 +1,10 @@
 const config = require('config');
 
 const io = require('../socket')
-const { generate_file } = require("../utils/generate_file")
+const { generateFile } = require("../utils/generateFile")
 const { logger } = require('../utils/logger')
 const { validateGenerateRoute } = require("../utils/validate");
-const { getProgressPercent } = require("../utils/generate_file/get_progress_percent");
+const { getProgressPercent } = require("../utils/generateFile/getProgressPercent");
 
 exports.generate = (req, res) => {
     const { size, file_name, socketId } = req.body
@@ -16,7 +16,7 @@ exports.generate = (req, res) => {
         return res.status(status).json({ message: message })
     }
 
-    generate_file(size, file_name,
+    generateFile(size, file_name,
         // on progress
         (data) => {
             const stringData = data.toString()
