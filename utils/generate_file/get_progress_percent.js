@@ -1,7 +1,7 @@
-function getProgressPercent(dataString, size) {
+function getProgressPercent(dataString, sizeInMegaByte) {
     const bytes = dataString.split(' ')[0]
-    const target = 1048576 * size
-    const percent = Number(bytes) / target * 100
+    const sizeInBinaryByte = 1048576 * sizeInMegaByte
+    const percent = Number(bytes) / sizeInBinaryByte * 100
     const percentTrunc = Math.trunc(percent)
     return isNaN(percentTrunc) ? 100 : percentTrunc
 }
